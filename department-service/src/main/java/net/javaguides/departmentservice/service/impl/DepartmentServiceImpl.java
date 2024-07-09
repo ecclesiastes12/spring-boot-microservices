@@ -1,5 +1,6 @@
 package net.javaguides.departmentservice.service.impl;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +15,8 @@ public class DepartmentServiceImpl implements DepartmentService{
 	
 	private DepartmentRepository departmentRepository;
 	
+	private ModelMapper modelMapper;
+	
 
 	//replaced with lombok annotation @AllArgsConstructor
 //	public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
@@ -25,24 +28,27 @@ public class DepartmentServiceImpl implements DepartmentService{
 	@Override
 	public DepartmentDto saveDepartment(DepartmentDto departmentDto) {
 		//convert department dto to department jpa entity
-		Department department = new Department(
-				departmentDto.getId(),
-				departmentDto.getDepartmentName(),
-				departmentDto.getDepartmentDescription(),
-				departmentDto.getDepartmentCode()
-		);
+//		Department department = new Department(
+//				departmentDto.getId(),
+//				departmentDto.getDepartmentName(),
+//				departmentDto.getDepartmentDescription(),
+//				departmentDto.getDepartmentCode()
+//		);
+		
+		Department department =modelMapper.map(departmentDto, Department.class);
 		
 		
 		Department saveDepartment = departmentRepository.save(department);
 		
-		//convert department to DepartmentDto
+		//convert department to DepartmentDto	
+//		DepartmentDto savedDepartmentDto = new DepartmentDto(
+//				saveDepartment.getId(),
+//				saveDepartment.getDepartmentName(),
+//				saveDepartment.getDepartmentDescription(),
+//				saveDepartment.getDepartmentCode()
+//				);
 		
-		DepartmentDto savedDepartmentDto = new DepartmentDto(
-				saveDepartment.getId(),
-				saveDepartment.getDepartmentName(),
-				saveDepartment.getDepartmentDescription(),
-				saveDepartment.getDepartmentCode()
-				);
+		DepartmentDto savedDepartmentDto = modelMapper.map(saveDepartment, DepartmentDto.class);
 		
 		return savedDepartmentDto;
 	}

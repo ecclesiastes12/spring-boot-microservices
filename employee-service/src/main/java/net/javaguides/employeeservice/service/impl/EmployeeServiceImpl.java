@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import net.javaguides.employeeservice.dto.EmployeeDto;
 import net.javaguides.employeeservice.entity.Employee;
+import net.javaguides.employeeservice.mapper.AutoEmployeeMapper;
 import net.javaguides.employeeservice.repository.EmployeeRepository;
 import net.javaguides.employeeservice.service.EmployeeService;
 
@@ -18,26 +19,27 @@ public class EmployeeServiceImpl implements EmployeeService{
 	@Override
 	public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
 		
-		//convert employee dto object to employee jpa entity ob
-		Employee employee = new Employee(
-				employeeDto.getId(),
-				employeeDto.getFirstName(),
-				employeeDto.getLastName(),
-				employeeDto.getEmail()
+		//convert employee dto object to employee jpa entity object
+//		Employee employee = new Employee(
+//				employeeDto.getId(),
+//				employeeDto.getFirstName(),
+//				employeeDto.getLastName(),
+//				employeeDto.getEmail()
+//				);
 		
-				);
+		Employee employee = AutoEmployeeMapper.MAPPER.mapTpEmployee(employeeDto);
 		
 		Employee savedEmployee = employeeRepository.save(employee);
 		
 		//convert employee entity object to employee dto object
+//		EmployeeDto savedEmployeeDto = new EmployeeDto(
+//				savedEmployee.getId(),
+//				savedEmployee.getFirstName(),
+//				savedEmployee.getLastName(),
+//				savedEmployee.getEmail()
+//			);
 		
-		EmployeeDto savedEmployeeDto = new EmployeeDto(
-				savedEmployee.getId(),
-				savedEmployee.getFirstName(),
-				savedEmployee.getLastName(),
-				savedEmployee.getEmail()
-			);
-		
+		EmployeeDto savedEmployeeDto = AutoEmployeeMapper.MAPPER.mapToEmployeeDto(savedEmployee);
 		return savedEmployeeDto;
 	}
 
@@ -47,12 +49,15 @@ public class EmployeeServiceImpl implements EmployeeService{
 		// TODO Auto-generated method stub
 		Employee employee = employeeRepository.findById(employeeId).get();
 		
-		EmployeeDto employeeDto = new EmployeeDto(
-				employee.getId(),
-				employee.getFirstName(),
-				employee.getLastName(),
-				employee.getEmail()
-				);
+//		EmployeeDto employeeDto = new EmployeeDto(
+//				employee.getId(),
+//				employee.getFirstName(),
+//				employee.getLastName(),
+//				employee.getEmail()
+//				);
+		
+		EmployeeDto employeeDto = AutoEmployeeMapper.MAPPER.mapToEmployeeDto(employee);
+		
 		return employeeDto;
 	}
 

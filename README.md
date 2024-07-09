@@ -21,3 +21,9 @@ git remote add origin https://github.com/ecclesiastes12/spring-boot-microservice
 git branch -M main
 
 git push -u origin main
+
+Creating and using a new branch involves two commands
+
+$ git branch new_branch_name
+
+$ git checkout new_branch_nam

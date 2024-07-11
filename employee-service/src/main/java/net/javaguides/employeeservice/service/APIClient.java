@@ -18,7 +18,19 @@ import net.javaguides.employeeservice.dto.DepartmentDto;
  * 
  */
 
-@FeignClient(url="http://localhost:8080", value = "DEPARTMENT-SERVICE")//base uri
+//@FeignClient(url="http://localhost:8080", value = "DEPARTMENT-SERVICE")//base uri
+//public interface APIClient {
+//
+//	//method to make rest api calls. with this in place open feign library will dynamically create an implementation
+//	//for this interface
+//	//build get department REST API
+//	@GetMapping("api/departments/{department-code}") 
+//	DepartmentDto getDepartment(@PathVariable("department-code") String departmentCode);
+//}
+
+
+//modified to automatic scale of the application using LoadBalancer
+@FeignClient(name = "DEPARTMENT-SERVICE")//base uri
 public interface APIClient {
 
 	//method to make rest api calls. with this in place open feign library will dynamically create an implementation

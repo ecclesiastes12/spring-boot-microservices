@@ -22,7 +22,8 @@ import net.javaguides.employeeservice.dto.DepartmentDto;
 public interface APIClient {
 
 	//method to make rest api calls. with this in place open feign library will dynamically create an implementation
-	//for this interface
+	//for this interface.
+	//This interface method internally make rest api call to get department by code
 	//build get department REST API
 	@GetMapping("api/departments/{department-code}") 
 	DepartmentDto getDepartment(@PathVariable("department-code") String departmentCode);

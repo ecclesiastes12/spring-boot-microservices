@@ -93,7 +93,7 @@
 //		Employee employee = employeeRepository.findById(employeeId).get();
 //		
 //		/*
-//		 * make rest api call using RestTemplate to get employee based on  department code. this takes two parameters
+//		 * make rest api call using RestTemplate to get employee by id which internally call department by code. this takes two parameters
 //		 * parameter 1 - url endpoint
 //		 * parameter 2 - response type which in our case is DepartmentDto
 //		 * 

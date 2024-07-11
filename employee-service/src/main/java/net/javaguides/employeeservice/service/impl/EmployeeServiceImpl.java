@@ -98,7 +98,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 		/*
 		 * see EmployeeServiceImpl3.java for how RestTemplate implementation to achieve the same result
 		 * 
-		 * Make rest api call using web client to get employee base on department
+		 * Make rest api call using web client to get employee by id and internally call department by code
 		 */
 		
 		DepartmentDto departmentDto = webClient.get()

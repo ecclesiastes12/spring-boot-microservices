@@ -10,9 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
+import net.javaguides.employeeservice.dto.APIResponseDto;
 import net.javaguides.employeeservice.dto.EmployeeDto;
 import net.javaguides.employeeservice.entity.Employee;
 import net.javaguides.employeeservice.service.EmployeeService;
+
+/*
+ * check EmployeeController2.java for the previous before the implementation of RestTemplate
+ */
 
 @RestController
 @RequestMapping("api/employees")
@@ -31,11 +36,21 @@ public class EmployeeController {
 	}
 	
 	//Build get Employee REST API
+//	@Deprecated
+//	@GetMapping("{id}")
+//	public ResponseEntity<EmployeeDto> getEmployee(@PathVariable("id") Long employeeId){
+//		EmployeeDto employeeDto = employeeService.getEmployeeById(employeeId);
+//		
+//		return new ResponseEntity<EmployeeDto>(employeeDto, HttpStatus.OK);
+//	}
+	
+	//code modified after RestTemplate implementation in the EmployeeServiceImpl.java class
+		//and EmployeeDto is now changed to APIResponseDto
 	@GetMapping("{id}")
-	public ResponseEntity<EmployeeDto> getEmployee(@PathVariable("id") Long employeeId){
-		EmployeeDto employeeDto = employeeService.getEmployeeById(employeeId);
+	public ResponseEntity<APIResponseDto> getEmployee(@PathVariable("id") Long employeeId){
+		APIResponseDto apiResponseDto = employeeService.getEmployeeById(employeeId);
 		
-		return new ResponseEntity<EmployeeDto>(employeeDto, HttpStatus.OK);
+		return new ResponseEntity<APIResponseDto>(apiResponseDto, HttpStatus.OK);
 	}
 	
 	

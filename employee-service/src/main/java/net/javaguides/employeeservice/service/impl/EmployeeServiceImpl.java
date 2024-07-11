@@ -13,6 +13,7 @@ import net.javaguides.employeeservice.entity.Employee;
 import net.javaguides.employeeservice.exceptions.ResourceNotFoundException;
 import net.javaguides.employeeservice.mapper.AutoEmployeeMapper;
 import net.javaguides.employeeservice.repository.EmployeeRepository;
+import net.javaguides.employeeservice.service.APIClient;
 import net.javaguides.employeeservice.service.EmployeeService;
 
 
@@ -28,7 +29,9 @@ public class EmployeeServiceImpl implements EmployeeService{
 	
 	//private RestTemplate restTemplate;
 	
-	private WebClient webClient;
+	//private WebClient webClient;
+	
+	private APIClient apiClient;
 	
 
 	@Override
@@ -96,17 +99,13 @@ public class EmployeeServiceImpl implements EmployeeService{
 		Employee employee = employeeRepository.findById(employeeId).get();
 		
 		/*
-		 * see EmployeeServiceImpl3.java for how RestTemplate implementation to achieve the same result
+		 * see EmployeeServiceImpl3.java and EmployeeServiceImpl4.java for  RestTemplate and WebClient implementation to achieve the same result
 		 * 
-		 * Make rest api call using web client to get employee base on department
+		 * Make rest api call using open feign to get employee base on department
 		 */
 		
-		DepartmentDto departmentDto = webClient.get()
-				.uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
-				.retrieve() //retrieve method from webclient
-				.bodyToMono(DepartmentDto.class) //pass in response type
-				.block(); //asynchronous type
 		
+		DepartmentDto departmentDto = apiClient.getDepartment(employee.getDepartmentCode());
 		
 		EmployeeDto employeeDto = new EmployeeDto(
 				employee.getId(),

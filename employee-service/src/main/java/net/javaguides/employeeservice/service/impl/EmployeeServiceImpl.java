@@ -3,6 +3,7 @@ package net.javaguides.employeeservice.service.impl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.AllArgsConstructor;
 import net.javaguides.employeeservice.dto.APIResponseDto;
@@ -16,7 +17,7 @@ import net.javaguides.employeeservice.service.EmployeeService;
 
 
 /*
- *Code refactor with RestTemplate. see  EmployeeServiceImpl2.java for the previous code
+ *Code refactor with WebClient. see  EmployeeServiceImpl2.java for the previous code and EmployeeServiceImpl3.java for RestTemplate implementation
  */
 
 @Service
@@ -25,7 +26,9 @@ public class EmployeeServiceImpl implements EmployeeService{
 	
 	private EmployeeRepository employeeRepository;
 	
-	private RestTemplate restTemplate;
+	//private RestTemplate restTemplate;
+	
+	private WebClient webClient;
 	
 
 	@Override
@@ -93,17 +96,17 @@ public class EmployeeServiceImpl implements EmployeeService{
 		Employee employee = employeeRepository.findById(employeeId).get();
 		
 		/*
-		 * make rest api call using RestTemplate to get the department code from the employee. this takes two parameters
-		 * parameter 1 - url endpoint
-		 * parameter 2 - response type which in our case is DepartmentDto
+		 * see EmployeeServiceImpl3.java for how RestTemplate implementation to achieve the same result
 		 * 
-		 * getForEntity - Retrieve an entity by doing a GET on the specified URL.The response is converted and stored in a ResponseEntity. 
-		 * Since getForEntity return a entity response we store the value in ResponseEntity object
+		 * Make rest api call using web client to get employee base on department
 		 */
-		ResponseEntity<DepartmentDto> responseEntity = restTemplate.getForEntity("http://localhost:8080/api/departments/" + employee.getDepartmentCode(), 
-				DepartmentDto.class);
 		
-		DepartmentDto departmentDto = responseEntity.getBody();
+		DepartmentDto departmentDto = webClient.get()
+				.uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
+				.retrieve() //retrieve method from webclient
+				.bodyToMono(DepartmentDto.class) //pass in response type
+				.block(); //asynchronous type
+		
 		
 		EmployeeDto employeeDto = new EmployeeDto(
 				employee.getId(),

@@ -86,11 +86,7 @@
 	      <groupId>org.springframework.cloud</groupId>
 	      <artifactId>spring-cloud-starter-bus-amqp</artifactId>
 	    </dependency>
-	    
-	    <dependency>
-	      <groupId>org.springframework.boot</groupId>
-	      <artifactId>spring-boot-starter-actuator</artifactId>
-	    </dependency>
+	  
 	    
 <!-- 	    <dependency> -->
 <!-- 			<groupId>io.micrometer</groupId> -->
@@ -115,6 +111,19 @@
 	      <groupId>io.zipkin.reporter2</groupId>
 	      <artifactId>zipkin-reporter-brave</artifactId>
 	    </dependency>
+	    
+	    <!-- dependency for circuit breaker using resilience4j-->
+	    <dependency>
+		    <groupId>org.springframework.cloud</groupId>
+		    <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+		    <version>1.0.2.RELEASE</version>
+		</dependency>
+	    <!-- NB  spring boot starter actuator uses spring boot starter aop to get the loggin information
+	    and metrics  information-->
+	    <dependency>
+			<groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
 	</dependencies>
 	 <dependencyManagement>
 	    <dependencies>
@@ -144,7 +153,6 @@
 			<plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.8.1</version>
             <configuration>
                 <source>17</source> <!-- depending on your project -->
                 <target>17</target> <!-- depending on your project -->

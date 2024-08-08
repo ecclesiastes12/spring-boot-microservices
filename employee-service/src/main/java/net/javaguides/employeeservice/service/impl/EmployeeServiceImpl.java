@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 import net.javaguides.employeeservice.dto.APIResponseDto;
 import net.javaguides.employeeservice.dto.DepartmentDto;
@@ -18,7 +19,7 @@ import net.javaguides.employeeservice.service.EmployeeService;
 
 
 /*
- *Code refactor with WebClient. see  EmployeeServiceImpl2.java for the previous code and EmployeeServiceImpl3.java for RestTemplate implementation
+ *Code refactor with WebClient and circuit breaker annotation added to getEmployeeById method
  */
 
 @Service
@@ -29,9 +30,9 @@ public class EmployeeServiceImpl implements EmployeeService{
 	
 	//private RestTemplate restTemplate;
 	
-	//private WebClient webClient;
+	private WebClient webClient;
 	
-	private APIClient apiClient;
+	//private APIClient apiClient;
 	
 
 	@Override
@@ -88,7 +89,10 @@ public class EmployeeServiceImpl implements EmployeeService{
 //	}
 	
 	//NB for learning purpose the exception part is removed and the return type change from EmployeeDto to APIResponseDto
+	
 	@Override
+	@CircuitBreaker(name = "${spring.application.name}", //application name used as a circuit breaker name
+	fallbackMethod = "getDefaultDeparment") 
 	public APIResponseDto getEmployeeById(Long employeeId) {
 		// TODO Auto-generated method stub
 //		Employee employee = employeeRepository.findById(employeeId).orElseThrow(
@@ -100,12 +104,17 @@ public class EmployeeServiceImpl implements EmployeeService{
 		
 		/*
 		 * see EmployeeServiceImpl3.java and EmployeeServiceImpl4.java for  RestTemplate and WebClient implementation to achieve the same result
-		 * 
-		 * Make rest api call using open feign to get employee base on department
 		 */
 		
+		//Make rest api call using open feign to get employee base on department
+		//DepartmentDto departmentDto = apiClient.getDepartment(employee.getDepartmentCode());
 		
-		DepartmentDto departmentDto = apiClient.getDepartment(employee.getDepartmentCode());
+		//api call using web client
+		DepartmentDto departmentDto = webClient.get()
+				.uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
+				.retrieve() //retrieve method from webclient
+				.bodyToMono(DepartmentDto.class) //pass in response type
+				.block(); //asynchronous type
 		
 		EmployeeDto employeeDto = new EmployeeDto(
 				employee.getId(),

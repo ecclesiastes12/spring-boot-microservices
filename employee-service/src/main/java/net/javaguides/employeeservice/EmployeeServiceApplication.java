@@ -22,11 +22,11 @@ public class EmployeeServiceApplication {
 //		return new RestTemplate();
 //	}
 	
-//	//WebClient configured as a spring bean
-//	@Bean
-//	public WebClient webClient() {
-//		return WebClient.builder().build();
-//	}
+	//WebClient configured as a spring bean
+	@Bean
+	public WebClient webClient() {
+		return WebClient.builder().build();
+	}
 	
 	
 

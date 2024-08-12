@@ -136,4 +136,36 @@ public class EmployeeServiceImpl implements EmployeeService{
 		return apiResponseDto;
 	}
 
+	//fallback method for circuit breaker. The purpose of this method is to return default department
+	//when request to fetch department fails
+	public APIResponseDto getDefaultDepartment(Long employeeId) {
+		Employee employee = employeeRepository.findById(employeeId).get();
+		
+		//dto object for default department
+		DepartmentDto departmentDto = new DepartmentDto();
+		departmentDto.setDepartmentName("R&D Department");
+		departmentDto.setDepartmentCode("RD001");
+		departmentDto.setDepartmentDescription("Research and Development Department");
+		
+		EmployeeDto employeeDto = new EmployeeDto(
+				employee.getId(),
+				employee.getFirstName(),
+				employee.getLastName(),
+				employee.getEmail(),
+				employee.getDepartmentCode()
+				);
+		
+		//EmployeeDto employeeDto = AutoEmployeeMapper.MAPPER.mapToEmployeeDto(employee);
+		
+		//create api response object
+		APIResponseDto apiResponseDto = new APIResponseDto();
+		
+		//set employee and department response to be send to the client
+		apiResponseDto.setEmployee(employeeDto);
+		apiResponseDto.setDepartment(departmentDto);
+		
+		return apiResponseDto;
+	}
+	
+	
 }

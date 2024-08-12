@@ -138,7 +138,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
 	//fallback method for circuit breaker. The purpose of this method is to return default department
 	//when request to fetch department fails
-	public APIResponseDto getDefaultDepartment(Long employeeId) {
+	public APIResponseDto getDefaultDepartment(Long employeeId, Exception exception) {
 		Employee employee = employeeRepository.findById(employeeId).get();
 		
 		//dto object for default department

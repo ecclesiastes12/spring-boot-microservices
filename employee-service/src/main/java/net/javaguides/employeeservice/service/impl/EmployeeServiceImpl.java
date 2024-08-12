@@ -16,6 +16,7 @@ import net.javaguides.employeeservice.dto.EmployeeDto;
 import net.javaguides.employeeservice.entity.Employee;
 import net.javaguides.employeeservice.exceptions.ResourceNotFoundException;
 import net.javaguides.employeeservice.mapper.AutoEmployeeMapper;
+import net.javaguides.employeeservice.mapper.EmployeeMapper;
 import net.javaguides.employeeservice.repository.EmployeeRepository;
 import net.javaguides.employeeservice.service.APIClient;
 import net.javaguides.employeeservice.service.EmployeeService;
@@ -48,26 +49,30 @@ public class EmployeeServiceImpl implements EmployeeService{
 	public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
 		
 		//convert employee dto object to employee jpa entity object
-		Employee employee = new Employee(
-				employeeDto.getId(),
-				employeeDto.getFirstName(),
-				employeeDto.getLastName(),
-				employeeDto.getEmail(),
-				employeeDto.getDepartmentCode()
-				);
+//		Employee employee = new Employee(
+//				employeeDto.getId(),
+//				employeeDto.getFirstName(),
+//				employeeDto.getLastName(),
+//				employeeDto.getEmail(),
+//				employeeDto.getDepartmentCode()
+//				);
+		
+		Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
 		
 		//Employee employee = AutoEmployeeMapper.MAPPER.mapTpEmployee(employeeDto);
 		
 		Employee savedEmployee = employeeRepository.save(employee);
 		
 		//convert employee entity object to employee dto object
-		EmployeeDto savedEmployeeDto = new EmployeeDto(
-				savedEmployee.getId(),
-				savedEmployee.getFirstName(),
-				savedEmployee.getLastName(),
-				savedEmployee.getEmail(),
-				savedEmployee.getDepartmentCode()
-			);
+//		EmployeeDto savedEmployeeDto = new EmployeeDto(
+//				savedEmployee.getId(),
+//				savedEmployee.getFirstName(),
+//				savedEmployee.getLastName(),
+//				savedEmployee.getEmail(),
+//				savedEmployee.getDepartmentCode()
+//			);
+		
+		EmployeeDto savedEmployeeDto = EmployeeMapper.mapToEmployeeDto(savedEmployee);
 		
 		//EmployeeDto savedEmployeeDto = AutoEmployeeMapper.MAPPER.mapToEmployeeDto(savedEmployee);
 		return savedEmployeeDto;
@@ -130,13 +135,15 @@ public class EmployeeServiceImpl implements EmployeeService{
 				.bodyToMono(DepartmentDto.class) //pass in response type
 				.block(); //asynchronous type
 		
-		EmployeeDto employeeDto = new EmployeeDto(
-				employee.getId(),
-				employee.getFirstName(),
-				employee.getLastName(),
-				employee.getEmail(),
-				employee.getDepartmentCode()
-				);
+//		EmployeeDto employeeDto = new EmployeeDto(
+//				employee.getId(),
+//				employee.getFirstName(),
+//				employee.getLastName(),
+//				employee.getEmail(),
+//				employee.getDepartmentCode()
+//				);
+		EmployeeDto employeeDto = EmployeeMapper.mapToEmployeeDto(employee);
+				
 		
 		//EmployeeDto employeeDto = AutoEmployeeMapper.MAPPER.mapToEmployeeDto(employee);
 		
@@ -163,13 +170,15 @@ public class EmployeeServiceImpl implements EmployeeService{
 		departmentDto.setDepartmentCode("RD001");
 		departmentDto.setDepartmentDescription("Research and Development Department");
 		
-		EmployeeDto employeeDto = new EmployeeDto(
-				employee.getId(),
-				employee.getFirstName(),
-				employee.getLastName(),
-				employee.getEmail(),
-				employee.getDepartmentCode()
-				);
+//		EmployeeDto employeeDto = new EmployeeDto(
+//				employee.getId(),
+//				employee.getFirstName(),
+//				employee.getLastName(),
+//				employee.getEmail(),
+//				employee.getDepartmentCode()
+//				);
+		
+		EmployeeDto employeeDto = EmployeeMapper.mapToEmployeeDto(employee);
 		
 		//EmployeeDto employeeDto = AutoEmployeeMapper.MAPPER.mapToEmployeeDto(employee);
 		

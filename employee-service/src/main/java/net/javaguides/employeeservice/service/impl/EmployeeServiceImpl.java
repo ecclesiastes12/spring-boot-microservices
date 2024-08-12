@@ -92,7 +92,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 	
 	@Override
 	@CircuitBreaker(name = "${spring.application.name}", //application name used as a circuit breaker name
-	fallbackMethod = "getDefaultDeparment") 
+	fallbackMethod = "getDefaultDepartment") 
 	public APIResponseDto getEmployeeById(Long employeeId) {
 		// TODO Auto-generated method stub
 //		Employee employee = employeeRepository.findById(employeeId).orElseThrow(

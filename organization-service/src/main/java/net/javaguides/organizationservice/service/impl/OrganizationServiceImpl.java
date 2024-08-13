@@ -16,8 +16,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 
 	private OrganizationRepository organizationRepository;
 	
-	
-	
+	//business method that create new organization
 	@Override
 	public OrganizationDto saveOrganization(OrganizationDto organizationDto) {
 		// convert OrganizationDto into Organization jpa entity
@@ -29,6 +28,15 @@ public class OrganizationServiceImpl implements OrganizationService{
 		return OrganizationMapper.mapToOrganizationDto(savedOrganization);
 		
 	
+	}
+
+	//business method that retrieve organization by code
+	@Override
+	public OrganizationDto getOrganizationByCode(String organizationCode) {
+		// TODO Auto-generated method stub
+		Organization organization = organizationRepository.findByOrganizationCode(organizationCode);
+		
+		return OrganizationMapper.mapToOrganizationDto(organization);
 	}
 
 }

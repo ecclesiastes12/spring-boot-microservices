@@ -6,4 +6,6 @@ import net.javaguides.organizationservice.entity.Organization;
 
 public interface OrganizationRepository extends JpaRepository<Organization, Long>{
 
+	//query method that retrieve organization by code
+	Organization findByOrganizationCode(String organizationCode);
 }

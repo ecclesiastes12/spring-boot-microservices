@@ -1,0 +1,196 @@
+//package net.javaguides.employeeservice.service.impl;
+//
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.stereotype.Service;
+//import org.springframework.web.client.RestTemplate;
+//import org.springframework.web.reactive.function.client.WebClient;
+//
+//import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+//import io.github.resilience4j.retry.annotation.Retry;
+//import lombok.AllArgsConstructor;
+//import net.javaguides.employeeservice.dto.APIResponseDto;
+//import net.javaguides.employeeservice.dto.DepartmentDto;
+//import net.javaguides.employeeservice.dto.EmployeeDto;
+//import net.javaguides.employeeservice.entity.Employee;
+//import net.javaguides.employeeservice.exceptions.ResourceNotFoundException;
+//import net.javaguides.employeeservice.mapper.AutoEmployeeMapper;
+//import net.javaguides.employeeservice.mapper.EmployeeMapper;
+//import net.javaguides.employeeservice.repository.EmployeeRepository;
+//import net.javaguides.employeeservice.service.APIClient;
+//import net.javaguides.employeeservice.service.EmployeeService;
+//
+//
+///*
+// *Code refactor with WebClient and circuit breaker annotation added to getEmployeeById method
+// *
+// *Resilience4j is a library that provides fault tolerance features such as retry, circuit breaker, rate limiter, time limiter, and bulkhead. 
+// *Retry is a feature that automatically retries a failed call using a configurable policy. Thus automatically retry a service when the service
+// *is down or fails
+// */
+//
+//@Service
+//@AllArgsConstructor
+//public class EmployeeServiceImpl7 implements EmployeeService{
+//	//logger
+//	private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl7.class);
+//	
+//	private EmployeeRepository employeeRepository;
+//	
+//	//private RestTemplate restTemplate;
+//	
+//	private WebClient webClient;
+//	
+//	//private APIClient apiClient;
+//	
+//
+//	@Override
+//	public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
+//		
+//		//convert employee dto object to employee jpa entity object
+////		Employee employee = new Employee(
+////				employeeDto.getId(),
+////				employeeDto.getFirstName(),
+////				employeeDto.getLastName(),
+////				employeeDto.getEmail(),
+////				employeeDto.getDepartmentCode()
+////				);
+//		
+//		Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
+//		
+//		//Employee employee = AutoEmployeeMapper.MAPPER.mapTpEmployee(employeeDto);
+//		
+//		Employee savedEmployee = employeeRepository.save(employee);
+//		
+//		//convert employee entity object to employee dto object
+////		EmployeeDto savedEmployeeDto = new EmployeeDto(
+////				savedEmployee.getId(),
+////				savedEmployee.getFirstName(),
+////				savedEmployee.getLastName(),
+////				savedEmployee.getEmail(),
+////				savedEmployee.getDepartmentCode()
+////			);
+//		
+//		EmployeeDto savedEmployeeDto = EmployeeMapper.mapToEmployeeDto(savedEmployee);
+//		
+//		//EmployeeDto savedEmployeeDto = AutoEmployeeMapper.MAPPER.mapToEmployeeDto(savedEmployee);
+//		return savedEmployeeDto;
+//	}
+//
+//
+////	@Override
+////	@Deprecated  //pubilc access type removed
+////	 EmployeeDto getEmployeeById(Long employeeId) {
+////		// TODO Auto-generated method stub
+////		Employee employee = employeeRepository.findById(employeeId).orElseThrow(
+////				//throws exception if user id is not found
+////				() -> new ResourceNotFoundException("Employee", "id", employeeId)
+////				
+////				);
+////		
+////		EmployeeDto employeeDto = new EmployeeDto(
+////				employee.getId(),
+////				employee.getFirstName(),
+////				employee.getLastName(),
+////				employee.getEmail(),
+////				employee.getDepartmentCode()
+////				);
+////		
+////		//EmployeeDto employeeDto = AutoEmployeeMapper.MAPPER.mapToEmployeeDto(employee);
+////		
+////		return employeeDto;
+////	}
+//	
+//	//NB for learning purpose the exception part is removed and the return type change from EmployeeDto to APIResponseDto
+//	// @CircuitBreaker annotation commented out. check EmployeeServiceImpl6.java for circuit breaker annotation and its implentation
+//	// Using retry annotation to a method(it is calling to external services)
+//	@Override
+//	//@CircuitBreaker(name = "${spring.application.name}", //application name used as a circuit breaker name
+//	//fallbackMethod = "getDefaultDepartment") 
+//	@Retry(name = "{spring.application.name}", fallbackMethod = "getDefaultDepartment")
+//	public APIResponseDto getEmployeeById(Long employeeId) {
+////		Employee employee = employeeRepository.findById(employeeId).orElseThrow(
+////				//throws exception if user id is not found
+////				() -> new ResourceNotFoundException("Employee", "id", employeeId)
+////				);
+//		
+//		
+//		//log instance
+//		LOGGER.info("inside getEmployeeById() method");
+//		
+//		Employee employee = employeeRepository.findById(employeeId).get();
+//		
+//		/*
+//		 * see EmployeeServiceImpl3.java and EmployeeServiceImpl4.java for  RestTemplate and WebClient implementation to achieve the same result
+//		 */
+//		
+//		//Make rest api call using open feign to get employee base on department
+//		//DepartmentDto departmentDto = apiClient.getDepartment(employee.getDepartmentCode());
+//		
+//		//api call using web client
+//		DepartmentDto departmentDto = webClient.get()
+//				.uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
+//				.retrieve() //retrieve method from webclient
+//				.bodyToMono(DepartmentDto.class) //pass in response type
+//				.block(); //asynchronous type
+//		
+////		EmployeeDto employeeDto = new EmployeeDto(
+////				employee.getId(),
+////				employee.getFirstName(),
+////				employee.getLastName(),
+////				employee.getEmail(),
+////				employee.getDepartmentCode()
+////				);
+//		EmployeeDto employeeDto = EmployeeMapper.mapToEmployeeDto(employee);
+//				
+//		
+//		//EmployeeDto employeeDto = AutoEmployeeMapper.MAPPER.mapToEmployeeDto(employee);
+//		
+//		//create api response object
+//		APIResponseDto apiResponseDto = new APIResponseDto();
+//		
+//		//set employee and department response to be send to the client
+//		apiResponseDto.setEmployee(employeeDto);
+//		apiResponseDto.setDepartment(departmentDto);
+//		
+//		return apiResponseDto;
+//	}
+//
+//	//fallback method for circuit breaker. The purpose of this method is to return default department
+//	//when request to fetch department fails
+//	public APIResponseDto getDefaultDepartment(Long employeeId, Exception exception) {
+//		//log instance
+//				LOGGER.info("inside getDefaultDepartment() method");
+//		Employee employee = employeeRepository.findById(employeeId).get();
+//		
+//		//dto object for default department
+//		DepartmentDto departmentDto = new DepartmentDto();
+//		departmentDto.setDepartmentName("R&D Department");
+//		departmentDto.setDepartmentCode("RD001");
+//		departmentDto.setDepartmentDescription("Research and Development Department");
+//		
+////		EmployeeDto employeeDto = new EmployeeDto(
+////				employee.getId(),
+////				employee.getFirstName(),
+////				employee.getLastName(),
+////				employee.getEmail(),
+////				employee.getDepartmentCode()
+////				);
+//		
+//		EmployeeDto employeeDto = EmployeeMapper.mapToEmployeeDto(employee);
+//		
+//		//EmployeeDto employeeDto = AutoEmployeeMapper.MAPPER.mapToEmployeeDto(employee);
+//		
+//		//create api response object
+//		APIResponseDto apiResponseDto = new APIResponseDto();
+//		
+//		//set employee and department response to be send to the client
+//		apiResponseDto.setEmployee(employeeDto);
+//		apiResponseDto.setDepartment(departmentDto);
+//		
+//		return apiResponseDto;
+//	}
+//	
+//	
+//}

@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import net.javaguides.employeeservice.dto.APIResponseDto;
 import net.javaguides.employeeservice.dto.DepartmentDto;
 import net.javaguides.employeeservice.dto.EmployeeDto;
+import net.javaguides.employeeservice.dto.OrganizationDto;
 import net.javaguides.employeeservice.entity.Employee;
 import net.javaguides.employeeservice.exceptions.ResourceNotFoundException;
 import net.javaguides.employeeservice.mapper.AutoEmployeeMapper;
@@ -23,6 +24,9 @@ import net.javaguides.employeeservice.service.EmployeeService;
 
 
 /*
+ * check EmployeeServiceImpl7.java for the previous code before Rest Api call for employee service to call organization service
+ * in the getEmployeeById method
+ * 
  *Code refactor with WebClient and circuit breaker annotation added to getEmployeeById method
  *
  *Resilience4j is a library that provides fault tolerance features such as retry, circuit breaker, rate limiter, time limiter, and bulkhead. 
@@ -135,13 +139,17 @@ public class EmployeeServiceImpl implements EmployeeService{
 				.bodyToMono(DepartmentDto.class) //pass in response type
 				.block(); //asynchronous type
 		
-//		EmployeeDto employeeDto = new EmployeeDto(
-//				employee.getId(),
-//				employee.getFirstName(),
-//				employee.getLastName(),
-//				employee.getEmail(),
-//				employee.getDepartmentCode()
-//				);
+		//api call using web client (method to internally call organization)
+		//get organization code from employee object
+		OrganizationDto organizationDto = webClient.get()
+				.uri("http://localhost:8083/api/organizations/" + employee.getOrganizationCode())
+				//.uri("http://localhost:8083/api/organizations", employee.getOrganizationCode())
+				.retrieve()
+				.bodyToMono(OrganizationDto.class)
+				.block();
+
+		
+
 		EmployeeDto employeeDto = EmployeeMapper.mapToEmployeeDto(employee);
 				
 		
@@ -153,6 +161,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 		//set employee and department response to be send to the client
 		apiResponseDto.setEmployee(employeeDto);
 		apiResponseDto.setDepartment(departmentDto);
+		apiResponseDto.setOrganization(organizationDto);
 		
 		return apiResponseDto;
 	}

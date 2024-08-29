@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 
-
+//define general api information with annotations
 @OpenAPIDefinition(
 		info = @Info(
 				title = "Department Service REST APIs",

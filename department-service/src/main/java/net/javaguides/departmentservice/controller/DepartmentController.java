@@ -9,9 +9,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import net.javaguides.departmentservice.dto.DepartmentDto;
 import net.javaguides.departmentservice.service.DepartmentService;
+
+/*
+ *  
+ *  @Tag provides description about this controller 
+ *  @Operation - The annotation may be used to define a resource method as an OpenAPI Operation, 
+ *  and/or to define additional properties for the Operation
+ *  
+ *  @ApiResponse - provides information about api response
+ */
+
+@Tag(
+		name = "Department Service - DepartmentController",
+		description = "Department Controller Exposes REST APIs for Department-Servoce"
+)
 
 @RestController
 @RequestMapping("api/departments")
@@ -19,6 +36,16 @@ import net.javaguides.departmentservice.service.DepartmentService;
 public class DepartmentController {
 
 	private DepartmentService departmentService;
+	
+	@Operation(
+			summary = "Save Department REST API",
+			description = "Save Department REST API is used to save department object into a database"
+	)
+	
+	@ApiResponse(
+			responseCode = "201",
+			description = "HTTP Status 20l CREATED"
+	)
 	
 	//build save department REST API
 	@PostMapping
@@ -28,6 +55,16 @@ public class DepartmentController {
 		return new ResponseEntity<DepartmentDto>(saveDepartment,HttpStatus.CREATED);
 	}
 	
+	
+	@Operation(
+			summary = "Get Department REST API",
+			description = "Get Department REST API is used to get a department object from the database"
+	)
+	
+	@ApiResponse(
+			responseCode = "200",
+			description = "HTTP Status 200 SUCCESS"
+	)
 	
 	//build get department REST API
 	@GetMapping("{department-code}")
